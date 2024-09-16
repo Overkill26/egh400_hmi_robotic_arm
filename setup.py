@@ -15,7 +15,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'simple_publisher = egh400_hmi_robotic_arm.simple_publisher:main',
+            'main = egh400_hmi_robotic_arm.main:main',
         ],
     },
 )
