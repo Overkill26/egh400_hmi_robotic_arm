@@ -12,23 +12,18 @@ class RoboticArmControl(Node):
         super().__init__("robotic_arm_control")
         self.publisher_ = self.create_publisher(JointState, "joint_command", 10)
 
-        # Initialize JointState message with 8 joints (including 'leftgripper' and 'rightgripper')
         self.joint_state = JointState()
         self.joint_state.name = ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "leftgripper", "rightgripper"]
         self.joint_state.position = [0.0] * len(self.joint_state.name)
 
-        # Track the last published positions
         self.last_published_positions = list(self.joint_state.position)
 
     def set_joint_positions(self, positions):
-        # Ensure positions is a list of floats
         if not all(isinstance(pos, float) for pos in positions):
             raise TypeError("Positions must be a list of floats.")
         
-        # Constrain positions to be between -π and π for the first 6 joints, and between 0 and 0.5 for the grippers
         constrained_positions = [np.clip(pos, -np.pi, np.pi) if i < 6 else np.clip(pos, 0, 0.5) for i, pos in enumerate(positions)]
         
-        # Publish only if the positions have changed
         if constrained_positions != self.last_published_positions:
             self.joint_state.position = constrained_positions
             self.joint_state.header.stamp = self.get_clock().now().to_msg()
@@ -36,15 +31,13 @@ class RoboticArmControl(Node):
             self.last_published_positions = constrained_positions
 
 def update_joint_positions():
-    # Convert slider values from degrees to radians for the joints, and use the same slider value for both grippers
-    joint_positions = [np.deg2rad(float(slider.get())) for slider in sliders[:-1]]  # First 6 joints in radians
-    gripper_position = float(sliders[-1].get())  # Gripper position (same for both grippers)
-    joint_positions.append(gripper_position)  # Append the leftgripper position
-    joint_positions.append(gripper_position)  # Append the rightgripper position (same as leftgripper)
+    joint_positions = [np.deg2rad(float(slider.get())) for slider in sliders[:-1]]
+    gripper_position = float(sliders[-1].get())
+    joint_positions.append(gripper_position)
+    joint_positions.append(gripper_position)
     ros2_publisher.set_joint_positions(joint_positions)
 
 def reset_sliders():
-    # Reset all sliders to 0 (or default positions)
     for slider in sliders:
         slider.set(0)
     update_joint_positions()
@@ -56,7 +49,6 @@ def create_gui():
     root = tk.Tk()
     root.title("Robotic Arm Control GUI")
 
-    # Frame for sliders
     sliders_frame = tk.Frame(root)
     sliders_frame.pack(side=tk.LEFT, padx=10, pady=10)
 
@@ -67,37 +59,30 @@ def create_gui():
         "Elbow Pan", "Wrist Lift", "Wrist Pan"
     ]
     
-    for i in range(6):  # Only 6 joints
+    for i in range(6):
         label = tk.Label(sliders_frame, text=joint_names[i].upper())
         label.pack()
 
-        # Set slider length to 400 (double the default length)
         slider = tk.Scale(sliders_frame, from_=-180, to=180, resolution=0.5, orient=tk.HORIZONTAL, length=400, command=lambda value, i=i: update_joint_positions())
         slider.pack()
         sliders.append(slider)
 
-    # Add the 7th slider for controlling both 'leftgripper' and 'rightgripper'
     label = tk.Label(sliders_frame, text="Grippers (Left & Right)")
     label.pack()
 
-    # Set slider length to 400 (double the default length)
     gripper_slider = tk.Scale(sliders_frame, from_=0, to=0.03, resolution=0.0005, orient=tk.HORIZONTAL, length=400, command=lambda value: update_joint_positions())
     gripper_slider.pack()
     sliders.append(gripper_slider)
 
-    # Frame for End Effector Control
     effector_frame = tk.Frame(root)
     effector_frame.pack(side=tk.LEFT, padx=20, pady=10)
 
-    # Title label for End Effector Control
     effector_label = tk.Label(effector_frame, text="End Effector Control", font=("Arial", 14))
     effector_label.grid(row=0, column=0, columnspan=2, pady=10)
 
-    # Frame for XY control (D-Pad style)
     xy_frame = tk.Frame(effector_frame)
     xy_frame.grid(row=1, column=0, padx=10)
 
-    # Arrow buttons for x and y movement
     up_button = tk.Button(xy_frame, text="↑", command=lambda: move_end_effector("Up"))
     up_button.grid(row=0, column=1)
 
@@ -110,22 +95,18 @@ def create_gui():
     down_button = tk.Button(xy_frame, text="↓", command=lambda: move_end_effector("Down"))
     down_button.grid(row=2, column=1)
 
-    # Frame for Z control (up and down) to the right of the D-Pad
     z_frame = tk.Frame(effector_frame)
     z_frame.grid(row=1, column=1, padx=20)
 
-    # Arrow buttons for z-axis movement
     z_up_button = tk.Button(z_frame, text="Z ↑", command=lambda: move_end_effector("Z Up"))
     z_up_button.pack(pady=5)
 
     z_down_button = tk.Button(z_frame, text="Z ↓", command=lambda: move_end_effector("Z Down"))
     z_down_button.pack(pady=5)
 
-    # Add the reset button under the End Effector Control section
     reset_button = tk.Button(effector_frame, text="Reset Sliders", command=reset_sliders)
     reset_button.grid(row=2, column=0, columnspan=2, pady=10)
 
-    # Run the Tkinter event loop
     root.mainloop()
 
 def start_ros2_node():
