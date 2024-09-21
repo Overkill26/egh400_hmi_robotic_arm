@@ -27,6 +27,17 @@ def move(x, y, z):
     print("Joint angles (in radians):", normalised_angles)
     print("Joint angles (in degrees):", [np.rad2deg(angle) for angle in normalised_angles])
 
+    # Forward kinematics to get the end effector's orientation
+    end_effector_transform = my_chain.forward_kinematics(normalised_angles)
+
+    # Extract the rotation matrix
+    rotation_matrix = end_effector_transform[:3, :3]
+
+    # Calculate the roll angle (assuming roll is around the x-axis)
+    roll_angle = np.arctan2(rotation_matrix[2, 1], rotation_matrix[2, 2])
+    print("Roll angle (in radians):", roll_angle)
+    print("Roll angle (in degrees):", np.rad2deg(roll_angle))
+
     fig, ax = plot_utils.init_3d_figure()
     fig.set_figheight(9)
     fig.set_figwidth(13)
@@ -40,5 +51,4 @@ def move(x, y, z):
 
     return normalised_angles
 
-move(0, 0, -0.1)
-
+move(0, -0.4, -0.1)
