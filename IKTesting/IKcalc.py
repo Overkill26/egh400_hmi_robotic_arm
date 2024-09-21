@@ -1,8 +1,7 @@
-import rclpy
-from rclpy.node import Node
-from sensor_msgs.msg import JointState
-import numpy as np
 import ikpy.chain
+import ikpy.utils.plot as plot_utils
+import numpy as np
+import matplotlib.pyplot as plt
 
 # Initialize the chain for inverse kinematics
 my_chain = ikpy.chain.Chain.from_urdf_file("IKTesting/roar_arm.urdf", active_links_mask=[False, False, True, True, True, True, True, False, False])
@@ -27,25 +26,19 @@ def move(x, y, z):
 
     print("Joint angles (in radians):", normalised_angles)
     print("Joint angles (in degrees):", [np.rad2deg(angle) for angle in normalised_angles])
+
+    fig, ax = plot_utils.init_3d_figure()
+    fig.set_figheight(9)
+    fig.set_figwidth(13)
+
+    my_chain.plot(ik, ax, target=target_position)
+
+    plt.xlim(-0.5, 0.5)
+    plt.ylim(-0.5, 0.5)
+    ax.set_zlim(0, 0.6)
+    plt.show()
+
     return normalised_angles
 
-def main():
-    rclpy.init()
-    print("Robotic Arm Control - Enter positions in X, Y, Z.")
+move(0, 0, -0.1)
 
-    while True:
-        try:
-            x = float(input("Enter X position (or type 'exit' to quit): "))
-            y = float(input("Enter Y position: "))
-            z = float(input("Enter Z position: "))
-            move(x, y, z)
-        except ValueError:
-            print("Invalid input. Please enter numeric values for X, Y, Z.")
-        except KeyboardInterrupt:
-            print("\nExiting...")
-            break
-
-    rclpy.shutdown()
-
-if __name__ == "__main__":
-    main()
