@@ -117,6 +117,21 @@ def set_orientation_flat():
     target_orientation = [0, -1, 0]
     print("Orientation set to flat.")
 
+def set_orientation_up():
+    global target_orientation
+    target_orientation = [0, 1, 0]
+    print("Orientation set to up.")
+
+def set_orientation_left():
+    global target_orientation
+    target_orientation = [-1, 0, 0]
+    print("Orientation set to left.")
+
+def set_orientation_right():
+    global target_orientation
+    target_orientation = [1, 0, 0]
+    print("Orientation set to right.")
+
 def create_gui():
     root = tk.Tk()
     root.title("Robotic Arm Control GUI")

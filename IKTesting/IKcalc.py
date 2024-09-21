@@ -1,24 +1,51 @@
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import JointState
 import numpy as np
+import ikpy.chain
 
-# Your rotation matrix
-current_orientation = np.array([
-    [0.33061076, 0.79133372, -0.51428346],
-    [-0.78333627, -0.0738431, -0.61719647],
-    [-0.52638466, 0.60690868, 0.59546708]
-])
+# Initialize the chain for inverse kinematics
+my_chain = ikpy.chain.Chain.from_urdf_file("IKTesting/roar_arm.urdf", active_links_mask=[False, False, True, True, True, True, True, False, False])
 
-# Extract forward vector (first column of the matrix)
-forward_vector = current_orientation[:, 0]
+initial_joint_angles = [0] * my_chain.active_links_mask
+initial_position = my_chain.forward_kinematics(initial_joint_angles)
+initial_position_xyz = initial_position[:3, 3]
 
-# Calculate the roll angle (in radians)
-roll_angle = np.arctan2(forward_vector[1], forward_vector[0])
+# Global variable for target orientation
+target_orientation = [0, -1, 0]
 
-# Normalize to the range of -pi to pi
-if roll_angle > np.pi:
-    roll_angle -= 2 * np.pi
-elif roll_angle < -np.pi:
-    roll_angle += 2 * np.pi
+# Function to calculate joint angles using inverse kinematics
+def move(x, y, z):
+    target_position = np.array([x, y, z]) + initial_position_xyz
+    
+    # Calculate the inverse kinematics
+    ik = my_chain.inverse_kinematics(target_position.tolist(), target_orientation, orientation_mode="Z")
+    
+    normalised_angles = [((angle + np.pi) % (2 * np.pi)) - np.pi for angle in ik.tolist()]
+    normalised_angles = normalised_angles[1:]  # Skip joint0
+    normalised_angles.append(0.0)  # Gripper position
 
-# Convert to degrees for readability
-roll_angle_degrees = np.rad2deg(roll_angle)
-print("Roll angle in degrees:", roll_angle_degrees)
+    print("Joint angles (in radians):", normalised_angles)
+    print("Joint angles (in degrees):", [np.rad2deg(angle) for angle in normalised_angles])
+    return normalised_angles
+
+def main():
+    rclpy.init()
+    print("Robotic Arm Control - Enter positions in X, Y, Z.")
+
+    while True:
+        try:
+            x = float(input("Enter X position (or type 'exit' to quit): "))
+            y = float(input("Enter Y position: "))
+            z = float(input("Enter Z position: "))
+            move(x, y, z)
+        except ValueError:
+            print("Invalid input. Please enter numeric values for X, Y, Z.")
+        except KeyboardInterrupt:
+            print("\nExiting...")
+            break
+
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
