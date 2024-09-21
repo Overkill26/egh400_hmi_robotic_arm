@@ -1,0 +1,160 @@
+<?xml version="1.0" ?>
+<robot name="Assembly">
+
+  <link name="base_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.00020258722115995613 6.802091845380796e-05 0.0601165448188115"/>
+      <mass value="5.908289859098361"/>
+      <inertia ixx="0.015691" ixy="0.000874" ixz="1.5e-05" iyy="0.015684" iyz="-6e-06" izz="0.023887"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link0_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-1.4279446712328615e-06 -0.22440691293762868 0.03599964264761413"/>
+      <mass value="2.0231717473852924"/>
+      <inertia ixx="0.029528" ixy="-0.0" ixz="-0.0" iyy="0.001439" iyz="0.003713" izz="0.028522"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 -0.0 -0.094"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link0_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 -0.0 -0.094"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link0_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link1_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0009707925157747384 -2.958286951981748e-05 0.02755437155530177"/>
+      <mass value="0.3533467828136892"/>
+      <inertia ixx="9.4e-05" ixy="0.0" ixz="-0.0" iyy="0.000108" iyz="0.0" izz="5.9e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.0 0.32475 -0.1771"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link1_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.0 0.32475 -0.1771"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link1_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link2_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.019514945267649186 7.69509938537416e-05 0.11144075942786386"/>
+      <mass value="0.5131079628057971"/>
+      <inertia ixx="0.000915" ixy="-0.0" ixz="-7e-06" iyy="0.000941" iyz="-1e-06" izz="8.3e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.018602 0.324781 -0.217312"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link2_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.018602 0.324781 -0.217312"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link2_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link3_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.019839977464722606 0.012070669534834821 0.043680878099196074"/>
+      <mass value="0.36881283014845634"/>
+      <inertia ixx="0.000119" ixy="-0.0" ixz="-1e-06" iyy="8.1e-05" iyz="-4e-06" izz="9.6e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.018507 0.324702 -0.366025"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link3_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.018507 0.324702 -0.366025"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link3_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+   <link name="link4_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0006113076874289041 -4.946065651489917e-08 0.027806336367662998"/>
+      <mass value="0.35377336927954606"/>
+      <inertia ixx="9.4e-05" ixy="-0.0" ixz="-0.0" iyy="0.000109" iyz="-0.0" izz="5.9e-05"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.00142 0.30075 -0.430091"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link4_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.00142 0.30075 -0.430091"/>
+      <geometry>
+        <mesh filename="file:///home/jover26/Documents/IsaacSim-ros_workspaces/humble_ws/install/Assembly_description/share/Assembly_description/meshes/link4_1.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint0" type="revolute">
+  <limit lower="-3.14159" upper="3.14159"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.094"/>
+    <parent link="base_link"/>
+    <child link="link0_1"/>
+    <axis xyz="0.0 -0.0 -1.0"/>
+  </joint>
+  <joint name="joint1" type="revolute">
+  <limit lower="-3.14159" upper="3.14159"/>
+    <origin rpy="0 0 0" xyz="0.0 -0.32475 0.0831"/>
+    <parent link="link0_1"/>
+    <child link="link1_1"/>
+    <axis xyz="0.0 0.0 1.0"/>
+  </joint>
+  <joint name="joint2" type="revolute">
+  <limit lower="-3.14159" upper="3.14159"/>
+    <origin rpy="0 0 0" xyz="-0.018602 -3.1e-05 0.040212"/>
+    <parent link="link1_1"/>
+    <child link="link2_1"/>
+    <axis xyz="-1.0 0.0 0.0"/>
+  </joint>
+  <joint name="joint3" type="revolute">
+  <limit lower="-3.14159" upper="3.14159"/>
+    <origin rpy="0 0 0" xyz="9.5e-05 7.9e-05 0.148713"/>
+    <parent link="link2_1"/>
+    <child link="link3_1"/>
+    <axis xyz="-1.0 0.0 0.0"/>
+  </joint>
+    <joint name="joint4" type="revolute">
+  <limit lower="-3.14159" upper="3.14159"/>
+    <origin rpy="0 0 0" xyz="0.019927 0.023952 0.064066"/>
+    <parent link="link3_1"/>
+    <child link="link4_1"/>
+    <axis xyz="0.0 0.0 1.0"/>
+  </joint>
+</robot>

@@ -1,28 +1,24 @@
-import ikpy.chain
-import ikpy.utils.plot as plot_utils
-
 import numpy as np
-import time
-import math
 
-import matplotlib.pyplot as plt
+# Your rotation matrix
+current_orientation = np.array([
+    [0.33061076, 0.79133372, -0.51428346],
+    [-0.78333627, -0.0738431, -0.61719647],
+    [-0.52638466, 0.60690868, 0.59546708]
+])
 
-import ipywidgets as widgets
+# Extract forward vector (first column of the matrix)
+forward_vector = current_orientation[:, 0]
 
-my_chain = ikpy.chain.Chain.from_urdf_file("IKTesting/roar_arm.urdf", active_links_mask=[False, True, True, True, True, True, True, False, False])
+# Calculate the roll angle (in radians)
+roll_angle = np.arctan2(forward_vector[1], forward_vector[0])
 
-def move(x, y, z):
-    target_position = [x, y, z]
-    target_orientation = [0, 0, 0]
-    ik = my_chain.inverse_kinematics(target_position, target_orientation, orientation_mode="Y")
-    
-    normalised_angles = [((angle + np.pi) % (2 * np.pi)) - np.pi for angle in ik.tolist()]
-    return normalised_angles
+# Normalize to the range of -pi to pi
+if roll_angle > np.pi:
+    roll_angle -= 2 * np.pi
+elif roll_angle < -np.pi:
+    roll_angle += 2 * np.pi
 
-print("Inverse Kinematics Calcualtions Starting")
-print(move(0, 0.4, 0.58))
-print(move(0, 0.4, 0.57))
-print(move(0, 0.4, 0.56))
-print(move(0, -0.4, 0.56))
-print(move(0, 0.4, 0.56))
-print(move(0, -0.4, 0.56)) 
+# Convert to degrees for readability
+roll_angle_degrees = np.rad2deg(roll_angle)
+print("Roll angle in degrees:", roll_angle_degrees)
