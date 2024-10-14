@@ -4,6 +4,9 @@ from tkinter import ttk
 def update_slider_value(axis, value):
     print(f"Axis {axis}: {value} degrees")
 
+def update_gripper_value(value):
+    print(f"Gripper position: {value} cm")
+
 def move_x(direction):
     print(f"Move X: {direction}")
 
@@ -16,7 +19,8 @@ def move_z(direction):
 def reset_positions():
     for slider in sliders:
         slider.set(0)
-    print("Positions reset to 0 degrees.")
+    gripper_slider.set(0)
+    print("Positions reset to 0 degrees and gripper reset to 0 cm.")
 
 def on_selection_change():
     selected = radio_var.get()
@@ -57,6 +61,14 @@ for i in range(1, 7):
                        command=lambda value, axis=i: update_slider_value(axis, int(float(value))))
     slider.grid(row=i-1, column=1, padx=10, pady=5)
     sliders.append(slider)
+
+# Adding the Gripper Slider
+gripper_label = ttk.Label(slider_frame, text="Gripper:")
+gripper_label.grid(row=6, column=0, padx=10, pady=5)
+
+gripper_slider = ttk.Scale(slider_frame, from_=0, to=0.03, orient="horizontal", length=400, 
+                           command=lambda value: update_gripper_value(float(value)))
+gripper_slider.grid(row=6, column=1, padx=10, pady=5)
 
 separator = ttk.Separator(root, orient='vertical')
 separator.pack(side=tk.LEFT, fill='y', padx=20)
