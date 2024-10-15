@@ -7,14 +7,12 @@ import numpy as np
 import ikpy.chain
 import time
 
-# Initialize the chain for inverse kinematics
 my_chain = ikpy.chain.Chain.from_urdf_file("IKTesting/roar_arm.urdf", active_links_mask=[False, False, True, True, True, True, True, False, False])
 
 initial_joint_angles = [0] * my_chain.active_links_mask
 initial_position = my_chain.forward_kinematics(initial_joint_angles)
 initial_position_xyz = initial_position[:3, 3]
 
-# Global variable for target orientation
 target_orientation = [0, -1, 0]
 
 class RoboticArmControl(Node):
@@ -27,8 +25,8 @@ class RoboticArmControl(Node):
         self.joint_state.position = [0.0] * len(self.joint_state.name)
 
         self.last_published_positions = list(self.joint_state.position)
-        self.max_velocity = np.deg2rad(120)  # Maximum velocity in radians/second
-        self.time_step = 0.05  # Time step for updates (in seconds)
+        self.max_velocity = np.deg2rad(120)
+        self.time_step = 0.05
 
     def set_joint_positions(self, target_positions):
         if not all(isinstance(pos, float) for pos in target_positions):
@@ -36,47 +34,32 @@ class RoboticArmControl(Node):
         
         constrained_positions = [np.clip(pos, -np.pi, np.pi) if i < 7 else np.clip(pos, 0, 0.5) for i, pos in enumerate(target_positions)]
 
-        # Interpolate the positions with velocity constraints
         current_positions = np.array(self.last_published_positions)
         target_positions = np.array(constrained_positions)
         while not np.allclose(current_positions, target_positions, atol=1e-3):
-            # Calculate the difference and the step based on max velocity
             position_diff = target_positions - current_positions
             step = np.clip(position_diff, -self.max_velocity * self.time_step, self.max_velocity * self.time_step)
             current_positions += step
-
-            # Update and publish joint positions
             self.joint_state.position = current_positions.tolist()
             self.joint_state.header.stamp = self.get_clock().now().to_msg()
             self.publisher_.publish(self.joint_state)
-
-            # Store the last published positions
             self.last_published_positions = current_positions.tolist()
 
-            # Wait for the next update
             time.sleep(self.time_step)
 
-# Function to calculate joint angles using inverse kinematics
 def move(x, y, z):
     target_position = np.array([x, y, z]) + initial_position_xyz
     
-    # Calculate the inverse kinematics
     ik = my_chain.inverse_kinematics(target_position.tolist(), target_orientation, orientation_mode="Z")
     
     normalised_angles = [((angle + np.pi) % (2 * np.pi)) - np.pi for angle in ik.tolist()]
-    normalised_angles = normalised_angles[1:]  # Skip joint0
-    normalised_angles.append(0.0)  # Gripper position
-
-    # Calculate the transformation matrix from the previous joints to the end effector
+    normalised_angles = normalised_angles[1:] 
+    normalised_angles.append(0.0)
     end_effector_transform = my_chain.forward_kinematics(normalised_angles).tolist()
     
-    # Compute the roll angle based on the desired orientation
     direction_vector = np.array([end_effector_transform[0][2], end_effector_transform[1][2], end_effector_transform[2][2]])
     flat_roll_angle = np.arctan2(direction_vector[1], direction_vector[0])
     print(flat_roll_angle)
-
-    # Set joint 6 to maintain flatness
-    #normalised_angles[5] = flat_roll_angle
 
     print("Roll angle (joint 6) for flat orientation: ", np.rad2deg(normalised_angles[5]))
     print("The angles of each joint are: ", normalised_angles)
@@ -101,17 +84,13 @@ def move_end_effector_xyz():
         z = float(z_entry.get())
         joint_positions = move(x, y, z)
 
-        # Update sliders with the new joint positions
-        for i, slider in enumerate(sliders[:-1]):  # Exclude gripper from the sliders
-            slider.set(np.rad2deg(joint_positions[i]))  # Convert radians to degrees for the slider
-        # Set the gripper position
+        for i, slider in enumerate(sliders[:-1]):
+            slider.set(np.rad2deg(joint_positions[i]))
         gripper_position = float(sliders[-1].get())
-        ros2_publisher.set_joint_positions(joint_positions + [gripper_position, gripper_position])  # Add gripper positions
+        ros2_publisher.set_joint_positions(joint_positions + [gripper_position, gripper_position])
 
     except ValueError:
         print("Invalid input for X, Y, Z.")
-
-# Functions to set target orientation
 def set_orientation_flat():
     global target_orientation
     target_orientation = [0, -1, 0]
@@ -146,14 +125,13 @@ def create_gui():
         "Elbow Pan", "Wrist Lift", "Wrist Pan"
     ]
     
-    # Add Base Joint slider
     label = tk.Label(sliders_frame, text=joint_names[0].upper())
     label.pack()
     base_joint_slider = tk.Scale(sliders_frame, from_=-180, to=180, resolution=0.5, orient=tk.HORIZONTAL, length=400, command=lambda value: update_joint_positions())
     base_joint_slider.pack()
     sliders.append(base_joint_slider)
 
-    for i in range(1, 7):  # Add sliders for joint1 to joint6
+    for i in range(1, 7):
         label = tk.Label(sliders_frame, text=joint_names[i].upper())
         label.pack()
 
@@ -173,8 +151,6 @@ def create_gui():
 
     effector_label = tk.Label(effector_frame, text="End Effector Control (XYZ)", font=("Arial", 14))
     effector_label.grid(row=0, column=0, columnspan=2, pady=10)
-
-    # XYZ input fields
     tk.Label(effector_frame, text="X:").grid(row=1, column=0)
     global x_entry
     x_entry = tk.Entry(effector_frame)
@@ -196,22 +172,16 @@ def create_gui():
     reset_button = tk.Button(effector_frame, text="Reset Sliders", command=reset_sliders)
     reset_button.grid(row=5, column=0, columnspan=2, pady=10)
 
-    # Orientation buttons
     orientation_frame = tk.Frame(root)
     orientation_frame.pack(side=tk.LEFT, padx=20, pady=10)
-
     flat_button = tk.Button(orientation_frame, text="y-", command=set_orientation_flat)
     flat_button.pack(pady=5)
-
     up_button = tk.Button(orientation_frame, text="y+", command=set_orientation_up)
     up_button.pack(pady=5)
-
     left_button = tk.Button(orientation_frame, text="x-", command=set_orientation_left)
     left_button.pack(pady=5)
-
     right_button = tk.Button(orientation_frame, text="x+", command=set_orientation_right)
     right_button.pack(pady=5)
-
     root.mainloop()
 
 def start_ros2_node():

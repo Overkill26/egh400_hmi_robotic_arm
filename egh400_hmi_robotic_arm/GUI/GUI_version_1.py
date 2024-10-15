@@ -6,7 +6,6 @@ def update_slider_value(axis, value):
 
 root = tk.Tk()
 root.title("6-Axis Robotic Arm Controller")
-root.geometry("600x400")
 
 title_label = ttk.Label(root, text="6-Axis Robotic Arm Controller", font=("Helvetica", 16))
 title_label.pack(pady=10)
